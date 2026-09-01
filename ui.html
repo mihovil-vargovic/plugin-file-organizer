@@ -1,0 +1,263 @@
+<!doctype html>
+<html>
+
+<head>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      height: auto;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    #plugin-root {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel-body {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 12px;
+    }
+
+    .seg {
+      display: flex;
+      padding: 2px;
+      background: var(--figma-color-bg-secondary, #f0f0f0);
+      border-radius: 6px;
+    }
+
+    .seg button {
+      -webkit-appearance: none;
+      appearance: none;
+      flex: 1;
+      padding: 5px 0;
+      margin: 0;
+      border: none !important;
+      background: transparent !important;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--figma-color-text-secondary, #666) !important;
+      cursor: pointer;
+      border-radius: 5px;
+      position: relative;
+      z-index: 1;
+      outline: none !important;
+      box-shadow: none !important;
+    }
+
+    .seg button:not(.active):hover {
+      color: var(--figma-color-text, #333) !important;
+    }
+
+    .seg button.active {
+      background: var(--figma-color-bg, #fff) !important;
+      color: var(--figma-color-text, #333) !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08) !important;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 24px;
+      padding: 0 12px;
+      border-radius: 4px;
+      border: 1px solid var(--figma-color-border, #e5e5e5);
+      background: var(--figma-color-bg-hover, #f5f5f5);
+      color: var(--figma-color-text, #333);
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 500;
+      line-height: 16px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .btn:hover {
+      background: var(--figma-color-bg-pressed, #eee);
+    }
+
+    .btn.disabled {
+      opacity: 0.4;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .btn-primary {
+      background: var(--figma-color-bg-brand, #0d99ff);
+      color: var(--figma-color-text-onbrand, #fff);
+      border-color: transparent;
+    }
+
+    .btn-primary:hover {
+      background: var(--figma-color-bg-brand-hover, #0c8ce9);
+    }
+
+    .actions-wrap {
+      position: relative;
+    }
+
+    .deselect-msg {
+      display: none;
+      position: absolute;
+      inset: 0;
+      align-items: center;
+      justify-content: center;
+      border: 1px dashed #e5e5e5;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 400;
+      color: #8c8c8c;
+      background: var(--figma-color-bg, #fff);
+    }
+  </style>
+</head>
+
+<body>
+  <div id="plugin-root">
+    <div
+      style="width:100%;height:120px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#f5f5f5;border-bottom:1px solid #ececec;">
+      <svg width="280" height="120" viewBox="0 0 280 120" fill="none" xmlns="http://www.w3.org/2000/svg"
+        class="cover-svg">
+        <style>
+          .cover-svg {
+            cursor: pointer;
+          }
+
+          .cover-svg .card-3 {
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+          }
+
+          .cover-svg .card-2 {
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+          }
+
+          .cover-svg .card-1 {
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+          }
+
+          .cover-svg:hover .card-3 {
+            transform: translateX(-6px);
+          }
+
+          .cover-svg:hover .card-2 {
+            transform: translateX(6px);
+          }
+
+          .cover-svg:hover .card-1 {
+            transform: translateY(-4px);
+          }
+        </style>
+        <defs>
+          <clipPath id="cover-clip">
+            <rect width="280" height="120" />
+          </clipPath>
+        </defs>
+        <g clip-path="url(#cover-clip)">
+          <g class="card-3">
+            <rect x="21" y="59.8525" width="201.808" height="113.517" rx="10.09" fill="#6D218F"
+              transform="rotate(-10 21 59.8525)" />
+          </g>
+          <g class="card-2">
+            <rect x="54.4893" y="27" width="201.808" height="113.517" rx="10.09" fill="#FB972E"
+              transform="rotate(7 54.4893 27)" />
+          </g>
+          <g class="card-1">
+            <rect x="39.5557" y="39.625" width="200" height="112.5" rx="10" fill="#FF0062" />
+            <text x="53" y="67" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="bold"
+              fill="white">File organizer</text>
+          </g>
+        </g>
+      </svg>
+    </div>
+    <div class="panel-body">
+      <div class="seg">
+        <button class="active" data-tab="exploration">Exploration</button>
+        <button data-tab="handoff">Handoff</button>
+      </div>
+      <div class="actions-wrap">
+        <div id="panel-exploration" class="tab-panel active">
+          <div class="btn disabled" id="action-addpage">Add exploration page</div>
+          <div class="btn btn-primary disabled" id="action-setup">Set up exploration file</div>
+        </div>
+        <div id="panel-handoff" class="tab-panel">
+          <div class="btn disabled" id="action-addhandoff">Add handoff page</div>
+          <div class="btn btn-primary disabled" id="action-setuphandoff">Set up handoff file</div>
+        </div>
+        <div id="deselect-msg" class="deselect-msg">Bro, deselect all elements</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    document.querySelectorAll('.seg button').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.seg button').forEach(function (b) { b.classList.remove('active') })
+        document.querySelectorAll('.tab-panel').forEach(function (p) { p.classList.remove('active') })
+        btn.classList.add('active')
+        document.getElementById('panel-' + btn.dataset.tab).classList.add('active')
+      })
+    })
+    document.getElementById('action-setup').addEventListener('click', function () {
+      if (this.classList.contains('disabled')) return
+      parent.postMessage({ pluginMessage: { type: 'run-action', id: 'setup' } }, '*')
+    })
+    document.getElementById('action-addpage').addEventListener('click', function () {
+      if (this.classList.contains('disabled')) return
+      parent.postMessage({ pluginMessage: { type: 'run-action', id: 'addpage' } }, '*')
+    })
+    document.getElementById('action-addhandoff').addEventListener('click', function () {
+      if (this.classList.contains('disabled')) return
+      parent.postMessage({ pluginMessage: { type: 'run-action', id: 'addhandoff' } }, '*')
+    })
+    document.getElementById('action-setuphandoff').addEventListener('click', function () {
+      if (this.classList.contains('disabled')) return
+      parent.postMessage({ pluginMessage: { type: 'run-action', id: 'setuphandoff' } }, '*')
+    })
+    window.addEventListener('message', function (event) {
+      var msg = event.data && event.data.pluginMessage
+      if (!msg || msg.type !== 'action-state' || !msg.actions) return
+      var anyDisabled = Object.values(msg.actions).some(function (a) { return a.enabled === false })
+      document.getElementById('deselect-msg').style.display = anyDisabled ? 'flex' : 'none'
+        ;['setup', 'addpage', 'addhandoff', 'setuphandoff'].forEach(function (id) {
+          var a = msg.actions[id]
+          var el = document.getElementById('action-' + id)
+          if (!a || !el) return
+          if (a.enabled === false) el.classList.add('disabled')
+          else el.classList.remove('disabled')
+          if (typeof a.label === 'string') el.textContent = a.label
+        })
+    })
+    window.addEventListener('load', function () {
+      var h = document.getElementById('plugin-root').offsetHeight + 2
+      parent.postMessage({ pluginMessage: { type: 'resize', height: h } }, '*')
+    })
+  </script>
+</body>
+
+</html>
